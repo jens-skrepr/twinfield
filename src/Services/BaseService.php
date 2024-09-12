@@ -14,6 +14,7 @@ use Psr\Log\LoggerAwareTrait;
  */
 abstract class BaseService extends \SoapClient implements LoggerAwareInterface
 {
+    use LoggerAwareTrait;
     /**
      * Get the WSDL. Can be with or without host.
      *
