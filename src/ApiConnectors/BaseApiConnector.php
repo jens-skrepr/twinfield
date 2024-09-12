@@ -172,7 +172,10 @@ abstract class BaseApiConnector implements LoggerAwareInterface
      */
     protected function getFinderService(): FinderService
     {
-        return $this->connection->getAuthenticatedClient(Services::FINDER());
+        $service = $this->connection->getAuthenticatedClient(Services::FINDER());
+        $service->setLogger($this->logger);
+
+        return $service;
     }
 
     /**
@@ -180,6 +183,9 @@ abstract class BaseApiConnector implements LoggerAwareInterface
      */
     protected function getSessionService(): SessionService
     {
-        return $this->connection->getAuthenticatedClient(Services::SESSION());
+        $service = $this->connection->getAuthenticatedClient(Services::SESSION());
+        $service->setLogger($this->logger);
+        
+        return $service;
     }
 }
