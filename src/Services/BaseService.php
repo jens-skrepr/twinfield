@@ -2,6 +2,9 @@
 
 namespace PhpTwinfield\Services;
 
+use Psr\Log\LoggerAwareInterface;
+use Psr\Log\LoggerAwareTrait;
+
 /**
  * Twinfield Soap Client.
  *
@@ -9,7 +12,7 @@ namespace PhpTwinfield\Services;
  *
  * @author Leon Rowland <leon@rowland.nl>
  */
-abstract class BaseService extends \SoapClient
+abstract class BaseService extends \SoapClient implements LoggerAwareInterface
 {
     /**
      * Get the WSDL. Can be with or without host.
@@ -40,5 +43,28 @@ abstract class BaseService extends \SoapClient
         }
 
         parent::__construct($wsdl, $options);
+    }
+
+    public function __doRequest(string $request, string $location, string $action, int $version, bool $oneWay = false)
+    {
+        $response = parent::__doRequest($request, $location, $action, $version, $oneWay);
+
+        $this->logRequest($request);
+
+        return $response;
+    }
+
+    private function logRequest(string $request)
+    {
+        if (!$this->logger) {
+            return;
+        }
+
+        $this->logger->debug(
+            "Sending request to Twinfield.",
+            [
+                'request_data' => $request
+            ]
+        );
     }
 }
